@@ -132,7 +132,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 10,
+        "w": 6,
         "x": 7,
         "y": 0
       },
@@ -182,6 +182,83 @@
         }
       ],
       "title": "Node Tick Speed",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 13,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "qubic_node_current_epoch",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "qubic_network_current_epoch",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Network",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Current Epoch",
       "type": "stat"
     },
     {
@@ -787,6 +864,7 @@
     }
   ],
   "preload": false,
+  "refresh": "30s",
   "schemaVersion": 40,
   "tags": [],
   "templating": {
@@ -820,6 +898,6 @@
   "timezone": "browser",
   "title": "Qubic Node Monitoring",
   "uid": "dereh8pws2e4gc",
-  "version": 38,
+  "version": 40,
   "weekStart": ""
 }
