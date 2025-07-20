@@ -201,10 +201,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -449,7 +445,7 @@
       "targets": [
         {
           "disableTextWrap": false,
-          "editorMode": "code",
+          "editorMode": "builder",
           "expr": "sum(qubic_network_computor)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
@@ -700,7 +696,7 @@
           ],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -711,43 +707,15 @@
       "targets": [
         {
           "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "qubic_network_current_tick{instance=\"host.docker.internal:8004\"}",
+          "editorMode": "code",
+          "expr": "qubic_network_current_tick - qubic_node_current_tick",
           "fullMetaSearch": false,
-          "hide": true,
+          "hide": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A",
           "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "qubic_node_current_tick{instance=\"host.docker.internal:8004\"}",
-          "fullMetaSearch": false,
-          "hide": true,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "name": "Expression",
-            "type": "__expr__",
-            "uid": "__expr__"
-          },
-          "expression": "$A - $B",
-          "hide": false,
-          "refId": "C",
-          "type": "math"
         }
       ],
       "title": "Node Tick Lag",
@@ -839,7 +807,7 @@
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(qubic_node_current_tick{job=\"qubic\", instance=\"host.docker.internal:8004\"}[5m])",
+          "expr": "rate(qubic_node_current_tick[5m])",
           "hide": false,
           "legendFormat": "Node Speed ({{instance}})",
           "range": true,
@@ -871,17 +839,36 @@
     "list": [
       {
         "current": {
-          "text": "",
-          "value": ""
+          "text": "170",
+          "value": "170"
         },
-        "definition": "query_result(qubic_network_current_epoch)",
-        "hide": 1,
-        "label": "latest_epoch",
-        "name": "latest_epoch",
+        "definition": "label_values(qubic_network_computor,epoch)",
+        "hide": 2,
+        "label": "Epoch",
+        "name": "Epoch",
         "options": [],
         "query": {
-          "qryType": 3,
-          "query": "query_result(qubic_network_current_epoch)",
+          "qryType": 1,
+          "query": "label_values(qubic_network_computor,epoch)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "host.docker.internal:8004",
+          "value": "host.docker.internal:8004"
+        },
+        "definition": "label_values(qubic_network_current_tick,$Host)",
+        "hide": 2,
+        "label": "Host",
+        "name": "Host",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(qubic_network_current_tick,$Host)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -898,6 +885,6 @@
   "timezone": "browser",
   "title": "Qubic Node Monitoring",
   "uid": "dereh8pws2e4gc",
-  "version": 40,
+  "version": 49,
   "weekStart": ""
 }
