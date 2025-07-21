@@ -4,7 +4,6 @@ from qubicly import QubicClient
 from flask import Flask, Response
 import requests 
 from prometheus_client import Gauge, generate_latest, CollectorRegistry
-from qubipy.rpc import rpc_client 
 
 app = Flask(__name__)
 
@@ -29,15 +28,23 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SERVER_PORT = int(os.getenv('SERVER_PORT', '8004'))
 
 qubic_client = QubicClient(NODE_IP, NODE_PORT)
-rpc = rpc_client.QubiPy_RPC()
 
-def get_computors(epoch: int):
+def get_network_computors(epoch: int):
     url = f"https://rpc.qubic.org/v1/epochs/{epoch}/computors"
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     if response.status_code == 200:
         return response.json()["computors"]["identities"]
     else:
         return []
+
+
+def get_network_tick_info():
+    url = f"https://rpc.qubic.org/v1/tick-info"
+    response = requests.get(url, timeout=10)
+    if response.status_code == 200:
+        return response.json()["tickInfo"]
+    else:
+        return {}
     
 
 @app.route('/metrics')
@@ -50,14 +57,14 @@ def metrics():
     qubic_node_version_gauge.set(system_info.version)
     qubic_node_initial_tick_this_epoch_gauge.set(system_info.initial_tick)
 
-    network_info = rpc.get_tick_info()
+    network_info = get_network_tick_info()
 
     qubic_network_current_tick_gauge.set(float(network_info.get("tick", 0)))
     qubic_network_current_epoch_gauge.set(float(network_info.get("epoch", 0)))
     qubic_network_initial_tick_this_epoch_gauge.set(float(network_info.get("initialTick", 0)))
 
     if network_info.get("epoch", 0) > 0:
-        computors = get_computors(network_info["epoch"])
+        computors = get_network_computors(network_info["epoch"])
         for computor in computors:
             qubic_network_computor_gauge.labels(network_info["epoch"], computor).set(1)
 

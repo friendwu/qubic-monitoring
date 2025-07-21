@@ -1,5 +1,4 @@
 qubicly @ git+https://github.com/friendwu/qubicly@master
 flask
 prometheus_client
-qubipy
 dotenv
