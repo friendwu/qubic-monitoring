@@ -26,8 +26,7 @@ pip install -r requirements.txt
 Create `.env` file in the `prometheus/` directory:
 
 ```env
-QUBIC_NODE_IP=YOUR_NODE_IP
-QUBIC_NODE_PORT=21841
+QUBIC_NODE_LIST=43.104.159.143:21841,43.104.159.144:21841,43.104.159.145:21841
 SERVER_PORT=8004
 DEBUG=False
 ```
@@ -63,33 +62,31 @@ scrape_configs:
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `QUBIC_NODE_IP` | `43.104.159.143` | IP address of your Qubic node |
-| `QUBIC_NODE_PORT` | `21841` | Port of your Qubic node |
-| `SERVER_PORT` | `8004` | Port for metrics server |
-| `DEBUG` | `False` | Enable debug mode |
+| Variable           | Default                                                      | Description                                 |
+|--------------------|--------------------------------------------------------------|---------------------------------------------|
+| `QUBIC_NODE_LIST`  | `43.104.159.143:21841,43.104.159.144:21841,43.104.159.145:21841` | Comma-separated list of Qubic node IP:port pairs |
+| `SERVER_PORT`      | `8004`                                                       | Port for metrics server                     |
+| `DEBUG`            | `False`                                                      | Enable debug mode                           |
 
 ### Metrics Collected
 
 #### Node Metrics
-- `qubic_node_current_tick`: Current tick of the monitored node
-- `qubic_node_current_epoch`: Current epoch of the monitored node
-- `qubic_node_version`: Version of the monitored node
-- `qubic_node_initial_tick_this_epoch`: Initial tick of current epoch
+- `qubic_node_current_tick`: Current tick of the monitored node (labeled by `node_addr`)
+- `qubic_node_current_epoch`: Current epoch of the monitored node (labeled by `node_addr`)
+- `qubic_node_version`: Version of the monitored node (labeled by `node_addr`)
+- `qubic_node_initial_tick_this_epoch`: Initial tick of current epoch for the monitored node (labeled by `node_addr`)
 
 #### Network Metrics
 - `qubic_network_current_tick`: Current tick of the Qubic network
 - `qubic_network_current_epoch`: Current epoch of the Qubic network
 - `qubic_network_initial_tick_this_epoch`: Initial tick of current network epoch
-- `qubic_network_computor`: Computor information with epoch and computor_id labels
+- `qubic_network_computor`: Computor presence in the network, labeled by `epoch` and `computor_id`
 
 ## Development
 
 ### Dependencies
 
 - **qubicly**: Qubic node client library
-- **qubipy**: Qubic RPC client
 - **flask**: Web framework for metrics endpoint
 - **prometheus_client**: Prometheus metrics generation
 - **python-dotenv**: Environment variable management
@@ -135,13 +132,4 @@ EnvironmentFile=/opt/qubic-monitoring/.env
 WantedBy=multi-user.target
 ```
 
-## Contributing
 
-1. Fork the repository
-2. Create feature branch
-3. Test changes locally
-4. Submit pull request
-
-## License
-
-MIT License - see LICENSE file for details
