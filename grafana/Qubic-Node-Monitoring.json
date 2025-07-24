@@ -36,8 +36,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -68,7 +67,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -80,7 +79,7 @@
           "expr": "qubic_node_current_tick",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -118,8 +117,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -154,15 +152,15 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(qubic_node_current_tick[5m])",
+          "expr": "rate(qubic_node_current_tick[1m])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -173,7 +171,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(qubic_network_current_tick[5m])",
+          "expr": "rate(qubic_network_current_tick[1m])",
           "hide": false,
           "instant": false,
           "legendFormat": "Network",
@@ -181,7 +179,7 @@
           "refId": "B"
         }
       ],
-      "title": "Node Tick Speed",
+      "title": "Node TPS",
       "type": "stat"
     },
     {
@@ -199,8 +197,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -231,12 +228,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "editorMode": "code",
           "expr": "qubic_node_current_epoch",
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A"
         },
@@ -272,8 +269,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -304,12 +300,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "editorMode": "code",
           "expr": "qubic_node_current_tick - qubic_node_initial_tick_this_epoch",
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A"
         },
@@ -345,8 +341,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -377,7 +372,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
@@ -385,7 +380,7 @@
           "expr": "qubic_node_version",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "__auto",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -409,8 +404,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -441,18 +435,29 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum(qubic_network_computor)",
+          "editorMode": "code",
+          "expr": "sum(qubic_network_computor{epoch=~\".*\"} offset 0s) by (epoch)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "",
+          "hide": false,
+          "instant": false,
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "Computors Count",
@@ -494,8 +499,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -530,14 +534,14 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "qubic_network_computor{computor_id=\"FAUQXOJZFQRQXAJIGZNZIHPWCVAAUXGOCQASGHHXAFDIIJIFUOGCWYNBBFMF\"}",
+          "expr": "label_replace(\n    qubic_network_computor{computor_id=~\"$computor_ids\"},\n    \"short_computor_id\", \"$1\", \"computor_id\", \"(.{0,10}).*\"\n)",
           "instant": true,
-          "legendFormat": "FAUQXOJZFQRQXAJIGZNZIHPWCVAAUXGOCQASGHHXAFDIIJIFUOGCWYNBBFMF",
+          "legendFormat": "{{short_computor_id}}",
           "range": false,
           "refId": "A"
         }
@@ -560,8 +564,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -592,7 +595,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
@@ -600,7 +603,7 @@
           "expr": "qubic_node_initial_tick_this_epoch",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -614,7 +617,7 @@
           "expr": "qubic_network_initial_tick_this_epoch",
           "hide": false,
           "instant": false,
-          "legendFormat": "network",
+          "legendFormat": "Network",
           "range": true,
           "refId": "B"
         }
@@ -670,8 +673,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -683,39 +685,33 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 12
       },
-      "id": 5,
+      "id": 16,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "qubic_network_current_tick - qubic_node_current_tick",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "legendFormat": "__auto",
+          "expr": "-(qubic_node_current_tick -  ignoring(node_addr) group_left  qubic_network_current_tick)",
+          "legendFormat": "{{node_addr}}",
           "range": true,
-          "refId": "A",
-          "useBackend": false
+          "refId": "A"
         }
       ],
       "title": "Node Tick Lag",
@@ -769,8 +765,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -785,9 +780,10 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 21
       },
       "id": 12,
+      "maxDataPoints": 60000,
       "options": {
         "legend": {
           "calcs": [
@@ -798,18 +794,19 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(qubic_node_current_tick[5m])",
+          "expr": "rate(qubic_node_current_tick[1m]) <100",
           "hide": false,
-          "legendFormat": "Node Speed ({{instance}})",
+          "legendFormat": "Node Speed ({{node_addr}})",
           "range": true,
           "refId": "A"
         },
@@ -819,7 +816,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(qubic_network_current_tick{job=\"qubic\", instance=\"host.docker.internal:8004\"}[5m])",
+          "expr": "rate(qubic_network_current_tick[1m]) < 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "Network Speed",
@@ -829,51 +826,153 @@
       ],
       "title": "Tick Speed Comparison",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 3600000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "qubic_network_current_tick",
+          "legendFormat": "Network",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "qubic_node_current_tick",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "{{node_addr}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Current Tick ",
+      "type": "timeseries"
     }
   ],
   "preload": false,
   "refresh": "30s",
-  "schemaVersion": 40,
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "170",
-          "value": "170"
+          "text": [
+            "ZJMIVGIFFZNIDDBGEBJOMFXYAGAALPHFYLDQGBMPHDTGWKVLGQFLVFYAMMPO",
+            "THYLJXISGWDDJFVLIFMZCNNAGDYCVIPTKUIKHNADLGHIVQHIIKFCLHNGCQQG"
+          ],
+          "value": [
+            "ZJMIVGIFFZNIDDBGEBJOMFXYAGAALPHFYLDQGBMPHDTGWKVLGQFLVFYAMMPO",
+            "THYLJXISGWDDJFVLIFMZCNNAGDYCVIPTKUIKHNADLGHIVQHIIKFCLHNGCQQG"
+          ]
         },
-        "definition": "label_values(qubic_network_computor,epoch)",
-        "hide": 2,
-        "label": "Epoch",
-        "name": "Epoch",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(qubic_network_computor,epoch)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "current": {
-          "text": "host.docker.internal:8004",
-          "value": "host.docker.internal:8004"
-        },
-        "definition": "label_values(qubic_network_current_tick,$Host)",
-        "hide": 2,
-        "label": "Host",
-        "name": "Host",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(qubic_network_current_tick,$Host)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
+        "includeAll": true,
+        "label": "computor ids",
+        "multi": true,
+        "name": "computor_ids",
+        "options": [
+          {
+            "selected": false,
+            "text": "EQOTMBNINEBMWFTBFTHTMWWLKHNBBAUHJNHUEQKDOCRTCLQBTDCMFOFHNNPJ",
+            "value": "EQOTMBNINEBMWFTBFTHTMWWLKHNBBAUHJNHUEQKDOCRTCLQBTDCMFOFHNNPJ"
+          },
+          {
+            "selected": true,
+            "text": "ZJMIVGIFFZNIDDBGEBJOMFXYAGAALPHFYLDQGBMPHDTGWKVLGQFLVFYAMMPO",
+            "value": "ZJMIVGIFFZNIDDBGEBJOMFXYAGAALPHFYLDQGBMPHDTGWKVLGQFLVFYAMMPO"
+          },
+          {
+            "selected": true,
+            "text": "THYLJXISGWDDJFVLIFMZCNNAGDYCVIPTKUIKHNADLGHIVQHIIKFCLHNGCQQG",
+            "value": "THYLJXISGWDDJFVLIFMZCNNAGDYCVIPTKUIKHNADLGHIVQHIIKFCLHNGCQQG"
+          }
+        ],
+        "query": "EQOTMBNINEBMWFTBFTHTMWWLKHNBBAUHJNHUEQKDOCRTCLQBTDCMFOFHNNPJ,ZJMIVGIFFZNIDDBGEBJOMFXYAGAALPHFYLDQGBMPHDTGWKVLGQFLVFYAMMPO,THYLJXISGWDDJFVLIFMZCNNAGDYCVIPTKUIKHNADLGHIVQHIIKFCLHNGCQQG",
+        "type": "custom"
       }
     ]
   },
@@ -885,6 +984,5 @@
   "timezone": "browser",
   "title": "Qubic Node Monitoring",
   "uid": "dereh8pws2e4gc",
-  "version": 49,
-  "weekStart": ""
+  "version": 77
 }
