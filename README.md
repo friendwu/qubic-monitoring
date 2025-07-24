@@ -2,6 +2,8 @@
 
 Real-time monitoring setup for Qubic nodes using Prometheus and Grafana. Collects metrics from both local Qubic nodes and the network, providing comprehensive insights into node performance and network status.
 
+![Grafana Dashboard](screenshot.png)
+
 ## Features
 
 - **Node Metrics**: Current tick, epoch, version, initial tick
