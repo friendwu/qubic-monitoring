@@ -17,7 +17,7 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 2,
   "id": 5,
   "links": [],
   "panels": [
@@ -45,7 +45,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 7,
+        "w": 6,
         "x": 0,
         "y": 0
       },
@@ -76,7 +76,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "qubic_node_current_tick",
+          "expr": "qubic_node_current_tick != 0",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "{{node_addr}}",
@@ -91,7 +91,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "qubic_network_current_tick",
+          "expr": "qubic_network_current_tick != 0",
           "hide": false,
           "instant": false,
           "legendFormat": "Network",
@@ -130,8 +130,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 7,
+        "w": 5,
+        "x": 6,
         "y": 0
       },
       "id": 3,
@@ -157,7 +157,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(qubic_node_current_tick[1m])",
+          "expr": "rate(qubic_node_current_tick[1m]) < 100",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "{{node_addr}}",
@@ -171,7 +171,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(qubic_network_current_tick[1m])",
+          "expr": "rate(qubic_network_current_tick[1m]) < 100",
           "hide": false,
           "instant": false,
           "legendFormat": "Network",
@@ -207,7 +207,7 @@
       "gridPos": {
         "h": 6,
         "w": 4,
-        "x": 13,
+        "x": 11,
         "y": 0
       },
       "id": 14,
@@ -278,8 +278,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 7,
-        "x": 17,
+        "w": 5,
+        "x": 15,
         "y": 0
       },
       "id": 9,
@@ -304,7 +304,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "qubic_node_current_tick - qubic_node_initial_tick_this_epoch",
+          "expr": "(qubic_node_current_tick - qubic_node_initial_tick_this_epoch) >= 0",
           "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A"
@@ -315,7 +315,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "qubic_network_current_tick - qubic_network_initial_tick_this_epoch",
+          "expr": "(qubic_network_current_tick - qubic_network_initial_tick_this_epoch) >= 0",
           "hide": false,
           "instant": false,
           "legendFormat": "Network",
@@ -324,6 +324,70 @@
         }
       ],
       "title": "Tick Count Since Epoch Start",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 17,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "-(qubic_node_current_tick - ignoring(node_addr) group_left qubic_network_current_tick)\n  and\nabs(qubic_node_current_tick - ignoring(node_addr) group_left qubic_network_current_tick) <= 30000000",
+          "legendFormat": "{{node_addr}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Tick Lag Number",
       "type": "stat"
     },
     {
@@ -829,7 +893,7 @@
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(qubic_node_current_tick[1m]) <100",
+          "expr": "rate(qubic_node_current_tick[1m]) <1000",
           "hide": false,
           "legendFormat": "Node Speed ({{node_addr}})",
           "range": true,
@@ -959,7 +1023,7 @@
     }
   ],
   "preload": false,
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -1009,5 +1073,5 @@
   "timezone": "browser",
   "title": "Qubic Node Monitoring",
   "uid": "dereh8pws2e4gc",
-  "version": 80
+  "version": 85
 }
