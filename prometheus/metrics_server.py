@@ -22,7 +22,7 @@ def parse_node_list(env_var):
         return nodes
     else:
         raise Exception(f"Error getting node list: {env_var} is not set")
-    
+
 NODE_LIST = parse_node_list('QUBIC_NODE_LIST')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SERVER_PORT = int(os.getenv('SERVER_PORT', '8004'))
@@ -63,6 +63,7 @@ def metrics():
 
     for (node_ip, node_port) in NODE_LIST:
         node_addr = f"{node_ip}:{node_port}"
+        qubic_client = None
         try:
             qubic_client = QubicClient(node_ip, node_port)
             tick_info = qubic_client.get_tick_info()
@@ -76,7 +77,8 @@ def metrics():
             print(f"failed to fetch node info: {node_addr}, {e}")
             continue
         finally:
-            qubic_client.close()
+            if qubic_client:
+                qubic_client.close()
 
     try:
         network_info = get_network_tick_info()

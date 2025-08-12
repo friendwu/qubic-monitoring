@@ -682,7 +682,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "86.105.224.48:21841"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -708,7 +733,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "-(qubic_node_current_tick -  ignoring(node_addr) group_left  qubic_network_current_tick)",
+          "expr": "-(qubic_node_current_tick - ignoring(node_addr) group_left qubic_network_current_tick)\n  and\nabs(qubic_node_current_tick - ignoring(node_addr) group_left qubic_network_current_tick) <= 30000000",
           "legendFormat": "{{node_addr}}",
           "range": true,
           "refId": "A"
@@ -910,7 +935,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "qubic_network_current_tick",
+          "expr": "qubic_network_current_tick != 0",
           "legendFormat": "Network",
           "range": true,
           "refId": "A"
@@ -921,7 +946,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "qubic_node_current_tick",
+          "expr": "qubic_node_current_tick != 0",
           "hide": false,
           "instant": false,
           "legendFormat": "{{node_addr}}",
@@ -977,12 +1002,12 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Qubic Node Monitoring",
   "uid": "dereh8pws2e4gc",
-  "version": 77
+  "version": 80
 }
