@@ -37,13 +37,18 @@ def get_network_computors(epoch: int):
         return []
 
 
-def get_network_tick_info():
-    url = f"https://rpc.qubic.org/v1/tick-info"
+def get_network_info():
+    url = f"https://rpc.qubic.org/v1/status"
     response = requests.get(url, timeout=10)
+    res = {}
     if response.status_code == 200:
-        return response.json()["tickInfo"]
+        rj = response.json()
+        res["tick"] = rj["lastProcessedTick"]["tickNumber"]
+        res["epoch"] = rj["lastProcessedTick"]["epoch"]
+        res["initialTick"] = rj["processedTickIntervalsPerEpoch"][-1]["intervals"][-1]["initialProcessedTick"]
+        return res
     else:
-        raise Exception(f"Error getting network tick info: {response.status_code}")
+        raise Exception(f"Error getting network info: {response.status_code}")
 
 
 @app.route('/metrics')
@@ -65,7 +70,7 @@ def metrics():
         node_addr = f"{node_ip}:{node_port}"
         qubic_client = None
         try:
-            qubic_client = QubicClient(node_ip, node_port)
+            qubic_client = QubicClient(node_ip, node_port, 120)
             tick_info = qubic_client.get_tick_info()
             system_info = qubic_client.get_system_info()
 
@@ -81,7 +86,7 @@ def metrics():
                 qubic_client.close()
 
     try:
-        network_info = get_network_tick_info()
+        network_info = get_network_info()
 
         qubic_network_current_tick_gauge.set(float(network_info.get("tick", 0)))
         qubic_network_current_epoch_gauge.set(float(network_info.get("epoch", 0)))
